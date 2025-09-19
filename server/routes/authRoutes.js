@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const authController = require('../controllers/authController');
+const requireAuth = require('../middleware/requireAuth');
 
 /**
  * @swagger
@@ -36,7 +37,7 @@ router.post('/register', authController.register)
  * @swagger
  * /auth/login:
  *   post:
- *     summary: Authentification de l'utilisateur
+ *     summary: Connexion de l'utilisateur
  *     tags: [Auth]
  *     requestBody:
  *       required: true
@@ -56,10 +57,10 @@ router.post('/register', authController.register)
  *                 example: superSecret
  *     responses:
  *       201:
- *         description: Utilisateur connecté avec succès
+ *         description: Utilisateur enregistré avec succès
  *       400:
  *         description: Données manquantes
  */
-router.get('/login', authController.login)
+router.post('/login', authController.login)
 
 module.exports = router;

@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const app = express();
 const server = http.createServer(app);
 const authRoutes = require('./routes/authRoutes');
+const contactRoutes = require('./routes/contactRoutes');
 
 //config swagger
 const swaggerUi = require('swagger-ui-express');
@@ -15,6 +16,7 @@ app.use(express.json());
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use('/auth', authRoutes);
+app.use('/contacts', contactRoutes);
 
 require('./models/User');
 

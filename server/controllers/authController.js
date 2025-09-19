@@ -1,6 +1,9 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const User = require('../models/User');
+const jwt = require('jsonwebtoken');
+const validator = require('validator');
+const { default: isEmail } = require('validator/lib/isEmail');
 
 exports.register = async (req, res) => {
     try {
@@ -13,6 +16,10 @@ exports.register = async (req, res) => {
         const existingUser = await User.findOne({ email });
         if (existingUser) {
             return res.status(400).json({ message: 'Cet email est déjà utilisé'});
+        }
+
+        if (!isEmail(email)) {
+            return res.status(400).json({ message: 'Format du mail incorrecte.'})
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -28,7 +35,7 @@ exports.register = async (req, res) => {
     }
 }
 
-exports.login = (req, res) => {
+exports.login = async (req, res) => {
     try {
         const { email, password } = req.body;
 
@@ -43,11 +50,19 @@ exports.login = (req, res) => {
 
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(400).json({ message: 'Mot de passe incorrect.' });
+            return res.status(400).json({ message: 'Identifiants incorrecte.' });
         }
+
+        const token = jwt.sign(
+            { id: user.id, email: user.email },
+            process.env.JWT_SECRET,
+        )
 
         res.status(200).json({
             message: 'Utilisateur connecté avec succès',
+            token,
         });
+    } catch (error) {
+        res.status(500).json({ message: 'Erreur serveur', error: error.message });
     }
 }
