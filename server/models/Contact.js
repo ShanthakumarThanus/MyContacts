@@ -10,6 +10,14 @@ const contactSchema = new Schema({
     },
     "phone": {
         "type": "String",
+        required: true,
+        minlength: 10,
+        maxlength: 20
+    },
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
     }
 });
 
