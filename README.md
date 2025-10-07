@@ -15,6 +15,7 @@ L’utilisateur peut s’inscrire, se connecter et effectuer des opérations CRU
 
 ## 🧩 Architecture du projet
 
+```bash
 MyContacts/
 │
 ├── client/ # Frontend React
@@ -36,6 +37,7 @@ MyContacts/
 │
 ├── .env # Variables d’environnement
 └── README.md # Documentation du projet
+```
 
 
 ---
