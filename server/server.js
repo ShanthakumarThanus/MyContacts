@@ -18,35 +18,49 @@ app.use(cors({
   credentials: true,
 }));
 
-//Middleware pour lire le JSON
+// Middleware pour lire le JSON
 app.use(express.json());
 
-//config swagger
+// Config Swagger
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./swagger');
 
-//Swagger
+// Swagger route
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-//Routes
+// Routes principales
 app.use('/auth', authRoutes);
 app.use('/contacts', contactRoutes);
 
+// Import du modèle User
 require('./models/User');
 
+// Définition de la bonne URI MongoDB selon l’environnement
+const dbUri =
+  process.env.NODE_ENV === "test"
+    ? process.env.MONGO_CONNECTION_STRING_TEST
+    : process.env.MONGO_CONNECTION_STRING;
+
 async function start() {
-    try {
-        await mongoose.connect(process.env.MONGO_CONNECTION_STRING);
-        console.log('server is connected');
-        const port = process.env.PORT || 4000;
-        server.listen(port, () => {
-            console.log('server running on ' + port);
-        })
-    } catch (error) {
-        console.log(error);
-        process.exit(1);
+  try {
+    await mongoose.connect(dbUri);
+    console.log(
+      `Connected to MongoDB (${process.env.NODE_ENV === "test" ? "TEST" : "PROD"})`
+    );
+
+    if (process.env.NODE_ENV !== "test") {
+      const port = process.env.PORT || 4000;
+      server.listen(port, () => {
+        console.log(`Server running on port ${port}`);
+      });
     }
+  } catch (error) {
+    console.error("Database connection error:", error);
+    process.exit(1);
+  }
 }
 
 start();
 
+// Export de l’app pour Jest / Supertest
+module.exports = app;

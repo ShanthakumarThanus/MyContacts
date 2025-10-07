@@ -9,12 +9,15 @@ export default function Contacts() {
     phone: "",
   });
 
+  const [editContactId, setEditContactId] = useState(null);
+  const [editData, setEditData] = useState({});
+
   // Fonction qui va récupérer les contacts de l'utilisateur
   const fetchContacts = async () => {
     try {
       const token = localStorage.getItem("token"); // récupère le token du login
       if (!token) {
-        setError("Aucun token trouvé. Veuillez vous reconnecter.");
+        setError("Veuillez vous reconnecter.");
         return;
       }
 
@@ -73,6 +76,56 @@ export default function Contacts() {
     }
   }
 
+  // Fonction pour supprimer un contact
+  const handleDeleteContact = async (id) => {
+    if (!window.confirm("Supprimer ce contact ?")) return;
+
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`http://localhost:4000/contacts/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (res.ok) {
+        setContacts(contacts.filter((c) => c._id !== id));
+      } else {
+        const data = await res.json();
+        setError(data.message || "Erreur lors de la suppression");
+      }
+    } catch {
+      setError("Erreur de connexion au serveur");
+    }
+  };
+
+  // Passe un contact en mode édition
+  const startEdit = (contact) => {
+    setEditContactId(contact._id);
+    setEditData({ ...contact });
+  };
+
+  // Sauvegarde les modifications
+  const handleUpdateContact = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`http://localhost:4000/contacts/${editContactId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(editData),
+      });
+
+      const data = await res.json();
+      if (!res.ok) return setError(data.message || "Erreur lors de la mise à jour");
+
+      setContacts(contacts.map((c) => (c._id === editContactId ? data : c)));
+      setEditContactId(null); // quitte le mode édition
+    } catch {
+      setError("Erreur de connexion au serveur");
+    }
+  };
 
   // useEffect = exécute la requête dès le chargement du composant
   useEffect(() => {
@@ -113,12 +166,47 @@ export default function Contacts() {
         <h3>Mes contacts</h3>
         {contacts.length === 0 && <p>Aucun contact.</p>}
         <ul>
-            {contacts.map((contact) => (
-                <li key={contact._id}>
-                    <strong>{contact.firstName} {contact.lastName}</strong> - {contact.phone}
-                </li>
-            ))}
-        </ul>
+        {contacts.map((contact) => (
+          <li key={contact._id} style={{ marginBottom: "10px" }}>
+            {editContactId === contact._id ? (
+              <>
+                <input
+                  type="text"
+                  value={editData.firstName}
+                  onChange={(e) =>
+                    setEditData({ ...editData, firstName: e.target.value })
+                  }
+                />
+                <input
+                  type="text"
+                  value={editData.lastName}
+                  onChange={(e) =>
+                    setEditData({ ...editData, lastName: e.target.value })
+                  }
+                />
+                <input
+                  type="text"
+                  value={editData.phone}
+                  onChange={(e) =>
+                    setEditData({ ...editData, phone: e.target.value })
+                  }
+                />
+                <button onClick={handleUpdateContact}>💾 Enregistrer</button>
+                <button onClick={() => setEditContactId(null)}>❌ Annuler</button>
+              </>
+            ) : (
+              <>
+                <strong>
+                  {contact.firstName} {contact.lastName}
+                </strong>{" "}
+                - {contact.phone}
+                <button onClick={() => startEdit(contact)}>✏️ Modifier</button>
+                <button onClick={() => handleDeleteContact(contact._id)}>🗑️ Supprimer</button>
+              </>
+            )}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

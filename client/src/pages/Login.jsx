@@ -22,21 +22,26 @@ export default function Login() {
     };
 
     return (
-        <form onSubmit={handleLogin}>
-            <h2>Connexion</h2>
-            <input
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)} 
-            />
-            <input
-                type="password"
-                placeholder="Mot de passe"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-            />
-            <button type="submit">Se connecter</button>
-        </form>
+        <div style={{ padding: "20px", maxWidth: "600px", margin: "auto" }}>
+            <form onSubmit={handleLogin} style={{ display: "flex", flexDirection: "column", gap: "10px", width: "300px", }}>
+                <h2>Connexion</h2>
+                <input
+                    type="email"
+                    placeholder="Email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)} 
+                />
+                <input
+                    type="password"
+                    placeholder="Mot de passe"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                />
+                <button type="submit">Se connecter</button>
+            </form>
+            <p>
+                <a href="/register">Se créer un compte</a>
+            </p>
+        </div>
     )
 }
