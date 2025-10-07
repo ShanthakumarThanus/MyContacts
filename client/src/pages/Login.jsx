@@ -5,20 +5,29 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
+  const [emailError, setEmailError] = useState(""); // nouvelle vérif dynamique
+
+  // Vérifie en direct si l’email est valide
+  const validateEmail = (value) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(value)) {
+      setEmailError("Format d'email invalide");
+    } else {
+      setEmailError("");
+    }
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setMessage("");
 
-    // Vérifie que l'email est bien formaté
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
+    // Validation côté client
+    if (emailError || !email) {
       setIsSuccess(false);
       setMessage("Veuillez entrer une adresse email valide.");
       return;
     }
 
-    // Vérifie que le mot de passe n'est pas vide
     if (!password.trim()) {
       setIsSuccess(false);
       setMessage("Veuillez entrer votre mot de passe.");
@@ -72,11 +81,20 @@ export default function Login() {
           type="email"
           placeholder="Email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e) => {
+            setEmail(e.target.value);
+            validateEmail(e.target.value);
+          }}
           required
-          pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$"
+          style={{
+            borderColor: emailError ? "red" : "#ccc",
+            outlineColor: emailError ? "red" : "#007bff",
+          }}
           title="Veuillez entrer une adresse email valide"
         />
+        {emailError && (
+          <small style={{ color: "red", fontSize: "0.85em" }}>{emailError}</small>
+        )}
 
         <input
           type="password"
