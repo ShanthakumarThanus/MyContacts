@@ -32,6 +32,14 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use('/auth', authRoutes);
 app.use('/contacts', contactRoutes);
 
+app.get("/", (req, res) => {
+  res.send(`
+    <h2>📇 MyContacts API</h2>
+    <p>Bienvenue sur l'API de gestion de contacts.</p>
+    <p><a href="/api-docs">Accéder à la documentation Swagger</a></p>
+  `);
+});
+
 // Import du modèle User
 require('./models/User');
 
