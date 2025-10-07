@@ -107,7 +107,7 @@ export default function Contacts() {
     try {
 
       const phoneRegex = /^\d{10,20}$/;
-      if (editData.phone && !phoneRegex.test(editData.phone)) {
+      if (!editData.phone || !phoneRegex.test(editData.phone)) {
         setError("Le numéro de téléphone doit contenir entre 10 et 20 chiffres.");
         return;
       }
