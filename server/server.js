@@ -12,7 +12,7 @@ const contactRoutes = require('./routes/contactRoutes');
 
 // Middleware CORS
 app.use(cors({
-  origin: ["http://localhost:3000", "http://127.0.0.1:3000"],
+  origin: ["http://localhost:3000", "http://127.0.0.1:3000", "https://mycontacts-frontend-thanus.netlify.app"],
   methods: ["GET", "POST", "PATCH", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
