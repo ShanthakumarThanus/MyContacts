@@ -138,36 +138,39 @@ export default function Contacts() {
         {error && <p style={{ color: "red" }}>{error}</p>}
 
         <h3>Ajouter un contact</h3>
-        <form onSubmit={handleAddContact} style={{ marginBottom: "20px" }}>
-            <input
-                type="text"
-                placeholder="Prénom"
-                value={formData.firstName}
-                onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                required
-            />
-            <input
-                type="text"
-                placeholder="Nom"
-                value={formData.lastName}
-                onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                required
-            />
-            <input
+          <form onSubmit={handleAddContact} style={{ marginBottom: "20px", display: "flex", flexDirection: "column", gap: "10px", width: "300px", }}>
+              <input
+                  type="text"
+                  placeholder="Prénom"
+                  value={formData.firstName}
+                  onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
+                  required
+              />
+              <input
+                  type="text"
+                  placeholder="Nom"
+                  value={formData.lastName}
+                  onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+                  required
+              />
+              <input
                 type="text"
                 placeholder="Téléphone"
                 value={formData.phone}
-                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                onChange={(e) => {
+                  const onlyNumbers = e.target.value.replace(/\D/g, ""); 
+                  setFormData({ ...formData, phone: onlyNumbers });
+                }}
                 required
-            />
-            <button type="submit">Ajouter</button>
-        </form>
+              />
+              <button type="submit">Ajouter</button>
+          </form>
 
         <h3>Mes contacts</h3>
         {contacts.length === 0 && <p>Aucun contact.</p>}
         <ul>
         {contacts.map((contact) => (
-          <li key={contact._id} style={{ marginBottom: "10px" }}>
+          <li key={contact._id} style={{ marginBottom: "10px", display: "flex", alignItems: "center", justifyContent: "space-between",padding: "8px 0"}}>
             {editContactId === contact._id ? (
               <>
                 <input
