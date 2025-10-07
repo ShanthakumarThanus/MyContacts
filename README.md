@@ -7,7 +7,7 @@ L’utilisateur peut s’inscrire, se connecter et effectuer des opérations CRU
 
 ## 🚀 Démonstration en ligne
 
-- **Frontend (React / Netlify)** : [https://mycontacts-frontend.netlify.app](https://mycontacts-frontend.netlify.app)](https://mycontacts-frontend-thanus.netlify.app/)
+- **Frontend (React / Netlify)** : [https://mycontacts-frontend.netlify.app](https://mycontacts-frontend.netlify.app)
 - **Backend (Express / Render)** : https://mycontacts-backend-mr9x.onrender.com/
 - **Documentation Swagger** : [https://mycontacts-backend-mr9x.onrender.com/api-docs](https://mycontacts-backend-mr9x.onrender.com/api-docs)
 
