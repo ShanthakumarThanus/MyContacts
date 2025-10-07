@@ -82,7 +82,21 @@ cd MyContacts
 ```
 
 ### 2️⃣ Installer les dépendances
-Backend :
 
+Backend :
+```bash
 cd server
 npm install
+```
+
+Frontend : 
+```bash
+cd client
+npm install
+npm start
+```
+
+🔑 Identifiants de test
+
+Email : test@test.com
+Mot de passe : Test123+
