@@ -14,15 +14,15 @@ export default function Register() {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       setIsSuccess(false);
-      setMessage("Veuillez entrer une adresse email valide.");
+      setMessage("Veuillez entrer une adresse e-mail valide.");
       return;
     }
 
-    const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{6,}$/;
+    const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
     if (!passwordRegex.test(password)) {
       setIsSuccess(false);
       setMessage(
-        "Le mot de passe doit contenir au moins 6 caractères, une majuscule et un chiffre."
+        "Le mot de passe doit contenir au moins 8 caractères, une majuscule et un chiffre."
       );
       return;
     }
@@ -75,7 +75,7 @@ export default function Register() {
           onChange={(e) => setEmail(e.target.value)}
           required
           pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$"
-          title="Veuillez entrer une adresse email valide"
+          title="Veuillez entrer une adresse e-mail valide (ex : nom@exemple.com)"
         />
 
         <input
@@ -84,7 +84,7 @@ export default function Register() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-          minLength={6}
+          minLength={8}
           pattern="^(?=.*[A-Z])(?=.*\d).{8,}$"
           title="Le mot de passe doit contenir au moins 8 caractères, une majuscule et un chiffre"
         />
