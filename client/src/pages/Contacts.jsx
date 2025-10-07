@@ -21,7 +21,7 @@ export default function Contacts() {
         return;
       }
 
-      const res = await fetch("http://localhost:4000/contacts", {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/contacts`, {
         headers: {
           "Authorization": `Bearer ${token}`,
         },
@@ -52,7 +52,7 @@ export default function Contacts() {
             return;
         }
 
-        const res = await fetch("http://localhost:4000/contacts", {
+        const res = await fetch(`${process.env.REACT_APP_API_URL}/contacts`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -82,7 +82,7 @@ export default function Contacts() {
 
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`http://localhost:4000/contacts/${id}`, {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/contacts/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -108,7 +108,7 @@ export default function Contacts() {
   const handleUpdateContact = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`http://localhost:4000/contacts/${editContactId}`, {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/contacts/${editContactId}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
