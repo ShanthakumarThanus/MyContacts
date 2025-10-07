@@ -5,7 +5,7 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
-  const [emailError, setEmailError] = useState(""); // nouvelle vérif dynamique
+  const [emailError, setEmailError] = useState("");
 
   // Vérifie en direct si l’email est valide
   const validateEmail = (value) => {
@@ -21,7 +21,6 @@ export default function Login() {
     e.preventDefault();
     setMessage("");
 
-    // Validation côté client
     if (emailError || !email) {
       setIsSuccess(false);
       setMessage("Veuillez entrer une adresse email valide.");
@@ -54,7 +53,7 @@ export default function Login() {
         setIsSuccess(false);
         setMessage(data.message || "Erreur lors de la connexion.");
       }
-    } catch (err) {
+    } catch {
       setIsSuccess(false);
       setMessage("Erreur de connexion au serveur.");
     }
@@ -77,6 +76,7 @@ export default function Login() {
           <p style={{ color: isSuccess ? "green" : "red" }}>{message}</p>
         )}
 
+        {/* Champ email */}
         <input
           type="email"
           placeholder="Email"
@@ -87,8 +87,10 @@ export default function Login() {
           }}
           required
           style={{
-            borderColor: emailError ? "red" : "#ccc",
-            outlineColor: emailError ? "red" : "#007bff",
+            border: `1px solid ${emailError ? "red" : "#ccc"}`,
+            borderRadius: "4px",
+            padding: "8px",
+            fontSize: "14px",
           }}
           title="Veuillez entrer une adresse email valide"
         />
@@ -96,15 +98,24 @@ export default function Login() {
           <small style={{ color: "red", fontSize: "0.85em" }}>{emailError}</small>
         )}
 
+        {/* Champ mot de passe */}
         <input
           type="password"
           placeholder="Mot de passe"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
+          style={{
+            border: "1px solid #ccc",
+            borderRadius: "4px",
+            padding: "8px",
+            fontSize: "14px",
+          }}
         />
 
-        <button type="submit">Se connecter</button>
+        <button type="submit" style={{ marginTop: "10px" }}>
+          Se connecter
+        </button>
       </form>
 
       <p>
