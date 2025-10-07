@@ -15,16 +15,14 @@ export default function Contacts() {
   // Fonction qui va récupérer les contacts de l'utilisateur
   const fetchContacts = async () => {
     try {
-      const token = localStorage.getItem("token"); // récupère le token du login
+      const token = localStorage.getItem("token");
       if (!token) {
         setError("Veuillez vous reconnecter.");
         return;
       }
 
       const res = await fetch(`${process.env.REACT_APP_API_URL}/contacts`, {
-        headers: {
-          "Authorization": `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
 
       const data = await res.json();
@@ -34,49 +32,47 @@ export default function Contacts() {
         return;
       }
 
-      setContacts(data); // stocke les contacts dans le state
-    } catch (err) {
+      setContacts(data);
+    } catch {
       setError("Erreur de connexion au serveur");
     }
   };
 
-  // Fonction pour ajouter un contact
+  // Ajouter un contact
   const handleAddContact = async (e) => {
     e.preventDefault();
     setError("");
 
     try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-            setError("Erreur : Veuillez vous reconnecter.");
-            return;
-        }
+      const token = localStorage.getItem("token");
+      if (!token) {
+        setError("Erreur : Veuillez vous reconnecter.");
+        return;
+      }
 
-        const res = await fetch(`${process.env.REACT_APP_API_URL}/contacts`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`,
-            },
-            body: JSON.stringify(formData),
-        });
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/contacts`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(formData),
+      });
 
-        const data = await res.json();
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.message || "Erreur lors de la création du contact");
+        return;
+      }
 
-        if (!res.ok) {
-            setError(data.message || "Erreur lors de la création du contact");
-            return;
-        }
-
-        // Ajoute le contact à la liste
-        setContacts([...contacts, data]);
-        setFormData({ firstName: "", lastName: "", phone: ""});
-    } catch (err) {
-        setError("Erreur de connexion au serveur");
+      setContacts([...contacts, data]);
+      setFormData({ firstName: "", lastName: "", phone: "" });
+    } catch {
+      setError("Erreur de connexion au serveur");
     }
-  }
+  };
 
-  // Fonction pour supprimer un contact
+  // Supprimer un contact
   const handleDeleteContact = async (id) => {
     if (!window.confirm("Supprimer ce contact ?")) return;
 
@@ -121,84 +117,155 @@ export default function Contacts() {
       if (!res.ok) return setError(data.message || "Erreur lors de la mise à jour");
 
       setContacts(contacts.map((c) => (c._id === editContactId ? data : c)));
-      setEditContactId(null); // quitte le mode édition
+      setEditContactId(null);
     } catch {
       setError("Erreur de connexion au serveur");
     }
   };
 
-  // useEffect = exécute la requête dès le chargement du composant
   useEffect(() => {
     fetchContacts();
   }, []);
 
   return (
-    <div style={{ padding: "20px", maxWidth: "600px", margin: "auto" }}>
+    <div
+      style={{
+        padding: "30px",
+        maxWidth: "700px",
+        margin: "auto",
+        fontFamily: "Arial, sans-serif",
+      }}
+    >
+      <h2 style={{ textAlign: "center", marginBottom: "20px" }}>📇 Mes Contacts</h2>
 
-        {error && <p style={{ color: "red" }}>{error}</p>}
+      {error && <p style={{ color: "red", textAlign: "center" }}>{error}</p>}
 
-        <h3>Ajouter un contact</h3>
-          <form onSubmit={handleAddContact} style={{ marginBottom: "20px", display: "flex", flexDirection: "column", gap: "10px", width: "300px", }}>
-              <input
-                  type="text"
-                  placeholder="Prénom"
-                  value={formData.firstName}
-                  onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                  required
-              />
-              <input
-                  type="text"
-                  placeholder="Nom"
-                  value={formData.lastName}
-                  onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                  required
-              />
-              <input
-                type="text"
-                placeholder="Téléphone"
-                value={formData.phone}
-                onChange={(e) => {
-                  const onlyNumbers = e.target.value.replace(/\D/g, ""); 
-                  // Autoriser seulement jusqu'à 20 chiffres
-                  if (onlyNumbers.length <= 20) {
-                    setFormData({ ...formData, phone: onlyNumbers });
-                  }
-                }}
-                required
-                minLength={10}
-                maxLength={20}
-                pattern="\d{10,20}"
-                title="Le numéro doit contenir entre 10 et 20 chiffres"
-              />
-              <button type="submit">Ajouter</button>
-          </form>
+      {/* --- Formulaire d'ajout --- */}
+      <div
+        style={{
+          background: "#f9f9f9",
+          borderRadius: "8px",
+          padding: "20px",
+          marginBottom: "25px",
+          boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
+        }}
+      >
+        <h3 style={{ marginBottom: "10px" }}>Ajouter un contact</h3>
+        <form
+          onSubmit={handleAddContact}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "10px",
+          }}
+        >
+          <input
+            type="text"
+            placeholder="Prénom"
+            value={formData.firstName}
+            onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
+            required
+            style={{
+              border: "1px solid #ccc",
+              borderRadius: "4px",
+              padding: "8px",
+            }}
+          />
+          <input
+            type="text"
+            placeholder="Nom"
+            value={formData.lastName}
+            onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+            required
+            style={{
+              border: "1px solid #ccc",
+              borderRadius: "4px",
+              padding: "8px",
+            }}
+          />
+          <input
+            type="text"
+            placeholder="Téléphone"
+            value={formData.phone}
+            onChange={(e) => {
+              const onlyNumbers = e.target.value.replace(/\D/g, "");
+              if (onlyNumbers.length <= 20) {
+                setFormData({ ...formData, phone: onlyNumbers });
+              }
+            }}
+            required
+            minLength={10}
+            maxLength={20}
+            pattern="\d{10,20}"
+            title="Le numéro doit contenir entre 10 et 20 chiffres"
+            style={{
+              border: "1px solid #ccc",
+              borderRadius: "4px",
+              padding: "8px",
+            }}
+          />
+          <button
+            type="submit"
+            style={{
+              backgroundColor: "#007bff",
+              color: "white",
+              border: "none",
+              padding: "10px",
+              borderRadius: "4px",
+              cursor: "pointer",
+            }}
+          >
+            ➕ Ajouter
+          </button>
+        </form>
+      </div>
 
-        <h3>Mes contacts</h3>
-        {contacts.length === 0 && <p>Aucun contact.</p>}
-        <ul>
+      {/* --- Liste des contacts --- */}
+      <h3 style={{ marginBottom: "10px" }}>Liste des contacts</h3>
+      {contacts.length === 0 && <p>Aucun contact enregistré.</p>}
+      <ul style={{ listStyle: "none", padding: 0 }}>
         {contacts.map((contact) => (
-          <li key={contact._id} style={{ marginBottom: "10px", display: "grid", alignItems: "center", justifyContent: "space-between",padding: "8px 0", gridTemplateColumns: "1fr 1fr 1fr auto auto",}}>
+          <li
+            key={contact._id}
+            style={{
+              marginBottom: "10px",
+              background: "#f1f1f1",
+              padding: "10px",
+              borderRadius: "6px",
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr 1fr auto auto",
+              gap: "8px",
+              alignItems: "center",
+            }}
+          >
             {editContactId === contact._id ? (
               <>
                 <input
                   type="text"
-                  placeholder="Prénom"
                   value={editData.firstName}
                   onChange={(e) =>
                     setEditData({ ...editData, firstName: e.target.value })
                   }
+                  style={{
+                    border: "1px solid #ccc",
+                    borderRadius: "4px",
+                    padding: "6px",
+                  }}
                 />
                 <input
                   type="text"
-                  placeholder="Nom"
                   value={editData.lastName}
                   onChange={(e) =>
                     setEditData({ ...editData, lastName: e.target.value })
                   }
+                  style={{
+                    border: "1px solid #ccc",
+                    borderRadius: "4px",
+                    padding: "6px",
+                  }}
                 />
                 <input
                   type="text"
-                  placeholder="Téléphone"
                   value={editData.phone}
                   onChange={(e) => {
                     const onlyNumbers = e.target.value.replace(/\D/g, "");
@@ -209,20 +276,70 @@ export default function Contacts() {
                   required
                   minLength={10}
                   maxLength={20}
-                  pattern="\d{10,20}"
-                  title="Le numéro doit contenir entre 10 et 20 chiffres"
+                  style={{
+                    border: "1px solid #ccc",
+                    borderRadius: "4px",
+                    padding: "6px",
+                  }}
                 />
-                <button onClick={handleUpdateContact}>💾 Enregistrer</button>
-                <button onClick={() => setEditContactId(null)}>❌ Annuler</button>
+                <button
+                  onClick={handleUpdateContact}
+                  style={{
+                    backgroundColor: "#28a745",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "4px",
+                    padding: "6px 10px",
+                    cursor: "pointer",
+                  }}
+                >
+                  💾
+                </button>
+                <button
+                  onClick={() => setEditContactId(null)}
+                  style={{
+                    backgroundColor: "#dc3545",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "4px",
+                    padding: "6px 10px",
+                    cursor: "pointer",
+                  }}
+                >
+                  ❌
+                </button>
               </>
             ) : (
               <>
-                <strong>
-                  {contact.firstName} {contact.lastName}
-                </strong>{" "}
-                {contact.phone}
-                <button onClick={() => startEdit(contact)}>✏️ Modifier</button>
-                <button onClick={() => handleDeleteContact(contact._id)}>🗑️ Supprimer</button>
+                <strong>{contact.firstName}</strong>
+                <span>{contact.lastName}</span>
+                <span>{contact.phone}</span>
+                <button
+                  onClick={() => startEdit(contact)}
+                  style={{
+                    backgroundColor: "#ffc107",
+                    color: "black",
+                    border: "none",
+                    borderRadius: "4px",
+                    padding: "6px 10px",
+                    cursor: "pointer",
+                  }}
+                >
+                  ✏️
+                </button>
+                <button
+                  onClick={() => handleDeleteContact(contact._id)}
+                  style={{
+                    backgroundColor: "#dc3545",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "4px",
+                    padding: "6px 10px",
+                    cursor: "pointer",
+                  }}
+                >
+                  🗑️
+                </button>
               </>
             )}
           </li>
