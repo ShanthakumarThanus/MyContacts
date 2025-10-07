@@ -10,12 +10,27 @@ export default function Register() {
     e.preventDefault();
     setMessage("");
 
+    // 🔍 Vérification frontend avant d’envoyer au serveur
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setIsSuccess(false);
+      setMessage("Veuillez entrer une adresse email valide.");
+      return;
+    }
+
+    const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{6,}$/;
+    if (!passwordRegex.test(password)) {
+      setIsSuccess(false);
+      setMessage(
+        "Le mot de passe doit contenir au moins 6 caractères, une majuscule et un chiffre."
+      );
+      return;
+    }
+
     try {
       const res = await fetch(`${process.env.REACT_APP_API_URL}/auth/register`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
 
@@ -40,24 +55,43 @@ export default function Register() {
   return (
     <div style={{ padding: "20px", maxWidth: "600px", margin: "auto" }}>
       <h2>Inscription</h2>
-      {message && <p style={{ color: isSuccess ? "green" : "red" }}>{message}</p>}
-      <form onSubmit={handleRegister} style={{ display: "flex", flexDirection: "column", gap: "10px", width: "300px", }}>
+      {message && (
+        <p style={{ color: isSuccess ? "green" : "red" }}>{message}</p>
+      )}
+
+      <form
+        onSubmit={handleRegister}
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "10px",
+          width: "300px",
+        }}
+      >
         <input
           type="email"
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
+          pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$"
+          title="Veuillez entrer une adresse email valide"
         />
+
         <input
           type="password"
           placeholder="Mot de passe"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
+          minLength={6}
+          pattern="^(?=.*[A-Z])(?=.*\d).{8,}$"
+          title="Le mot de passe doit contenir au moins 8 caractères, une majuscule et un chiffre"
         />
+
         <button type="submit">S'inscrire</button>
       </form>
+
       <p>
         Déjà un compte ? <a href="/">Se connecter</a>
       </p>

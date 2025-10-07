@@ -159,9 +159,16 @@ export default function Contacts() {
                 value={formData.phone}
                 onChange={(e) => {
                   const onlyNumbers = e.target.value.replace(/\D/g, ""); 
-                  setFormData({ ...formData, phone: onlyNumbers });
+                  // Autoriser seulement jusqu'à 20 chiffres
+                  if (onlyNumbers.length <= 20) {
+                    setFormData({ ...formData, phone: onlyNumbers });
+                  }
                 }}
                 required
+                minLength={10}
+                maxLength={20}
+                pattern="\d{10,20}"
+                title="Le numéro doit contenir entre 10 et 20 chiffres"
               />
               <button type="submit">Ajouter</button>
           </form>
@@ -175,6 +182,7 @@ export default function Contacts() {
               <>
                 <input
                   type="text"
+                  placeholder="Prénom"
                   value={editData.firstName}
                   onChange={(e) =>
                     setEditData({ ...editData, firstName: e.target.value })
@@ -182,6 +190,7 @@ export default function Contacts() {
                 />
                 <input
                   type="text"
+                  placeholder="Nom"
                   value={editData.lastName}
                   onChange={(e) =>
                     setEditData({ ...editData, lastName: e.target.value })
@@ -189,10 +198,19 @@ export default function Contacts() {
                 />
                 <input
                   type="text"
+                  placeholder="Téléphone"
                   value={editData.phone}
-                  onChange={(e) =>
-                    setEditData({ ...editData, phone: e.target.value })
-                  }
+                  onChange={(e) => {
+                    const onlyNumbers = e.target.value.replace(/\D/g, "");
+                    if (onlyNumbers.length <= 20) {
+                      setEditData({ ...editData, phone: onlyNumbers });
+                    }
+                  }}
+                  required
+                  minLength={10}
+                  maxLength={20}
+                  pattern="\d{10,20}"
+                  title="Le numéro doit contenir entre 10 et 20 chiffres"
                 />
                 <button onClick={handleUpdateContact}>💾 Enregistrer</button>
                 <button onClick={() => setEditContactId(null)}>❌ Annuler</button>

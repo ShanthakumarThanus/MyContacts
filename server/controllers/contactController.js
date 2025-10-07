@@ -14,6 +14,14 @@ exports.getContacts = async (req, res) => {
 exports.createContact = async (req, res) => {
   try {
     const { firstName, lastName, phone } = req.body;
+
+    const phoneRegex = /^\d{10,20}$/;
+    if (!phoneRegex.test(phone)) {
+      return res.status(400).json({
+        message: "Le numéro de téléphone doit contenir entre 10 et 20 chiffres.",
+      });
+    }
+
     const contact = new Contact({ firstName, lastName, phone, userId: req.user.id });
     await contact.save();
     res.status(201).json(contact);
@@ -25,6 +33,15 @@ exports.createContact = async (req, res) => {
 // Mise à jour partielle d’un contact
 exports.updateContact = async (req, res) => {
   try {
+
+    const { phone } = req.body;
+
+    if (phone && !/^\d{10,20}$/.test(phone)) {
+      return res.status(400).json({
+        message: "Le numéro de téléphone doit contenir entre 10 et 20 chiffres.",
+      });
+    }
+
     const contact = await Contact.findOneAndUpdate(
       { _id: req.params.id, userId: req.user.id },
       req.body,
