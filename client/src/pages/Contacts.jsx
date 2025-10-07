@@ -170,7 +170,7 @@ export default function Contacts() {
         {contacts.length === 0 && <p>Aucun contact.</p>}
         <ul>
         {contacts.map((contact) => (
-          <li key={contact._id} style={{ marginBottom: "10px", display: "flex", alignItems: "center", justifyContent: "space-between",padding: "8px 0"}}>
+          <li key={contact._id} style={{ marginBottom: "10px", display: "grid", alignItems: "center", justifyContent: "space-between",padding: "8px 0", gridTemplateColumns: "1fr 1fr 1fr auto auto", gridTemplateColumns: "1fr 1fr 1fr 100px 100px"}}>
             {editContactId === contact._id ? (
               <>
                 <input
@@ -202,7 +202,7 @@ export default function Contacts() {
                 <strong>
                   {contact.firstName} {contact.lastName}
                 </strong>{" "}
-                - {contact.phone}
+                {contact.phone}
                 <button onClick={() => startEdit(contact)}>✏️ Modifier</button>
                 <button onClick={() => handleDeleteContact(contact._id)}>🗑️ Supprimer</button>
               </>
