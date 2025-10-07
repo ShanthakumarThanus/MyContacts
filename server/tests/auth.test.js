@@ -2,7 +2,9 @@ process.env.NODE_ENV = "test";
 require("dotenv").config();
 const request = require("supertest");
 const mongoose = require("mongoose");
+const { MongoMemoryServer } = require("mongodb-memory-server");
 const app = require("../server"); 
+let mongoServer;
 
 describe("Tests Auth (Register & Login)", () => {
   const testUser = {
@@ -10,14 +12,18 @@ describe("Tests Auth (Register & Login)", () => {
     password: "testpassword123",
   };
 
-  // Nettoyage avant les tests
+  // Démarre un serveur Mongo en mémoire avant les tests
   beforeAll(async () => {
-    await mongoose.connect(process.env.MONGO_CONNECTION_STRING_TEST);
+    mongoServer = await MongoMemoryServer.create();
+    const uri = mongoServer.getUri();
+    await mongoose.connect(uri);
   });
 
+  // Nettoie et arrête le serveur après les tests
   afterAll(async () => {
-    await mongoose.connection.db.dropDatabase(); // vide la base test uniquement
+    await mongoose.connection.dropDatabase();
     await mongoose.connection.close();
+    await mongoServer.stop();
   });
 
   test("doit inscrire un nouvel utilisateur", async () => {

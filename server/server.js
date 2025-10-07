@@ -60,7 +60,9 @@ async function start() {
   }
 }
 
-start();
+if (process.env.NODE_ENV !== "test") {
+  start();
+}
 
 // Export de l’app pour Jest / Supertest
 module.exports = app;

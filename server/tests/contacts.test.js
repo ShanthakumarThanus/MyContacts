@@ -3,13 +3,19 @@ require("dotenv").config();
 const request = require("supertest");
 const mongoose = require("mongoose");
 const app = require("../server");
+const { MongoMemoryServer } = require("mongodb-memory-server");
 
 describe("Tests Contacts (CRUD)", () => {
   let token;
   let contactId;
 
+  let mongoServer;
+
   beforeAll(async () => {
-    await mongoose.connect(process.env.MONGO_CONNECTION_STRING_TEST);
+    // Démarre un serveur Mongo temporaire en mémoire
+    mongoServer = await MongoMemoryServer.create();
+    const uri = mongoServer.getUri();
+    await mongoose.connect(uri);
 
     // Crée un utilisateur de test
     await request(app).post("/auth/register").send({
@@ -27,8 +33,9 @@ describe("Tests Contacts (CRUD)", () => {
   });
 
   afterAll(async () => {
-    await mongoose.connection.db.dropDatabase(); // supprime seulement la base test
+    await mongoose.connection.dropDatabase();
     await mongoose.connection.close();
+    await mongoServer.stop(); // arrête le serveur mémoire
   });
 
   test("doit créer un nouveau contact", async () => {
