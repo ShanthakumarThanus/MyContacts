@@ -41,6 +41,12 @@ export default function Contacts() {
     e.preventDefault();
     setError("");
 
+    const phoneRegex = /^\d{10,20}$/;
+    if (!phoneRegex.test(formData.phone)) {
+      setError("Le numéro de téléphone doit contenir entre 10 et 20 chiffres.");
+      return;
+    }
+
     try {
       const token = localStorage.getItem("token");
       if (!token) {
@@ -99,6 +105,13 @@ export default function Contacts() {
 
   const handleUpdateContact = async () => {
     try {
+
+      const phoneRegex = /^\d{10,20}$/;
+      if (editData.phone && !phoneRegex.test(editData.phone)) {
+        setError("Le numéro de téléphone doit contenir entre 10 et 20 chiffres.");
+        return;
+      }
+
       const token = localStorage.getItem("token");
       const res = await fetch(`${process.env.REACT_APP_API_URL}/contacts/${editContactId}`, {
         method: "PATCH",
@@ -176,7 +189,11 @@ export default function Contacts() {
           maxLength={20}
           pattern="\d{10,20}"
           title="Le numéro doit contenir entre 10 et 20 chiffres"
-          style={inputStyle}
+          style={{
+            ...inputStyle,
+            borderColor:
+              formData.phone && formData.phone.length < 10 ? "red" : "#ccc",
+          }}
         />
         <button type="submit">Ajouter</button>
       </form>
@@ -229,9 +246,13 @@ export default function Contacts() {
                   required
                   minLength={10}
                   maxLength={20}
-                  pattern="\d{10,20}"
+                  pattern="\\d{10,20}"
                   title="Le numéro doit contenir entre 10 et 20 chiffres"
-                  style={inputStyle}
+                  style={{
+                    ...inputStyle,
+                    borderColor:
+                      editData.phone && editData.phone.length < 10 ? "red" : "#ccc",
+                  }}
                 />
                 <button onClick={handleUpdateContact}>💾 Enregistrer</button>
                 <button onClick={() => setEditContactId(null)}>❌ Annuler</button>
