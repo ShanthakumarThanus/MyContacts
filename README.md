@@ -87,6 +87,7 @@ Backend :
 ```bash
 cd server
 npm install
+node server.js (ou npm start)
 ```
 
 Frontend : 
