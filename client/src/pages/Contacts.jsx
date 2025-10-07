@@ -170,7 +170,7 @@ export default function Contacts() {
         {contacts.length === 0 && <p>Aucun contact.</p>}
         <ul>
         {contacts.map((contact) => (
-          <li key={contact._id} style={{ marginBottom: "10px", display: "grid", alignItems: "center", justifyContent: "space-between",padding: "8px 0", gridTemplateColumns: "1fr 1fr 1fr auto auto", gridTemplateColumns: "1fr 1fr 1fr 100px 100px"}}>
+          <li key={contact._id} style={{ marginBottom: "10px", display: "grid", alignItems: "center", justifyContent: "space-between",padding: "8px 0", gridTemplateColumns: "1fr 1fr 1fr auto auto",}}>
             {editContactId === contact._id ? (
               <>
                 <input
