@@ -101,3 +101,6 @@ npm start
 
 Email : test@test.com
 Mot de passe : Test123+
+
+## Auteur
+Thanus SHANTHAKUMAR
